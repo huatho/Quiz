@@ -1,0 +1,14 @@
+package com.example.demo.dto;
+
+import java.time.LocalDateTime;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class RefreshTokenResponse {
+	private String accessToken;
+	private String refreshToken;
+	private LocalDateTime refreshTokenExpiryDate;
+}
