@@ -2,9 +2,7 @@ package com.example.demo.service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.HexFormat;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.common.exception.AppException;
 import com.example.demo.common.exception.ErrorCode;
+import com.example.demo.common.utils.Utils;
 import com.example.demo.dto.RefreshTokenDTO;
 import com.example.demo.dto.RefreshTokenRequest;
 import com.example.demo.dto.RefreshTokenResponse;
@@ -27,9 +26,7 @@ public class RefreshTokenService {
 	private int expirationDay;
 	private final RefreshTokenRepository refreshTokenRepo;
 	private final JwtService jwtService;
-	
-	private static final SecureRandom SECURERANDOM = new SecureRandom();
-	
+		
 	public RefreshTokenService(RefreshTokenRepository refreshTokenRepo, JwtService jwtService) {
 		this.refreshTokenRepo = refreshTokenRepo;
 		this.jwtService = jwtService;
@@ -39,7 +36,7 @@ public class RefreshTokenService {
 	public RefreshTokenDTO createToken(User user) {
 		refreshTokenRepo.deleteByUserId(user.getId());
 		RefreshToken refreshToken = new RefreshToken();
-		String rawToken = generateToken();
+		String rawToken = Utils.generateSecureRandomToken();
 		refreshToken.setToken(hashToken(rawToken));
 		refreshToken.setUser(user);
 		refreshToken.setExpiryDate(LocalDateTime.now().plusDays(expirationDay));
@@ -78,12 +75,5 @@ public class RefreshTokenService {
 	    } catch (Exception e) {
 	        throw new RuntimeException("Error hashing token", e);
 	    }
-	}
-	
-	private String generateToken() {
-	    byte[] randomBytes = new byte[32];
-	    SECURERANDOM.nextBytes(randomBytes);
-	    
-	    return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
 	}
 }

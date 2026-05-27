@@ -52,6 +52,18 @@ public enum ErrorCode {
     		"Email already exists", 
     		HttpStatus.CONFLICT
     ),
+    
+    INVALID_EMAIL_VERIFICATION_TOKEN(
+            "INVALID_EMAIL_VERIFICATION_TOKEN",
+            "Invalid email verification token",
+            HttpStatus.BAD_REQUEST
+    ),
+    
+    EMAIL_VERIFICATION_TOKEN_EXPIRED(
+            "EMAIL_VERIFICATION_TOKEN_EXPIRED",
+            "Email verification token has expired",
+            HttpStatus.BAD_REQUEST
+    ),
 
     // Access token
     ACCESS_TOKEN_EXPIRED(
@@ -89,6 +101,12 @@ public enum ErrorCode {
             "TOKEN_USER_MISMATCH",
             "Access token and refresh token do not belong to the same user",
             HttpStatus.UNAUTHORIZED
+    ),
+    
+    EMAIL_SEND_FAILED(
+            "EMAIL_SEND_FAILED",
+            "Failed to send email",
+            HttpStatus.INTERNAL_SERVER_ERROR
     );
 
     private final String code;

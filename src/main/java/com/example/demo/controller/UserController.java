@@ -1,14 +1,19 @@
 package com.example.demo.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.common.response.ApiResponse;
+import com.example.demo.common.response.SuccessCode;
 import com.example.demo.dto.UpdatePasswordRequest;
+import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
@@ -19,12 +24,14 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@PutMapping("/change-password")
-	public ResponseEntity<String> changePassword(@RequestBody UpdatePasswordRequest request,
-			Authentication authentication) {
-		String email = authentication.getName();
-		userService.updatePassword(email, request);
+	@PutMapping("/me/password")
+	public ResponseEntity<ApiResponse<Void>> changePassword(
+			@Valid @RequestBody UpdatePasswordRequest request,
+			@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		userService.updatePassword(customUserDetails.getEmail(), request);
 		
-		return ResponseEntity.ok("Password updated successfully");
+		return ResponseEntity
+				.status(SuccessCode.SUCCESS.getHttpStatus())
+				.body(ApiResponse.success(SuccessCode.SUCCESS, null));
 	}
 }
