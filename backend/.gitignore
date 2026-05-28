@@ -1,5 +1,4 @@
 # Environment files
-.git-backups/
 .env
 .env.*
 !.env.example
